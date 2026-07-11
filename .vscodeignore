@@ -2,16 +2,21 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-src/
-tests/
+.vscode/**
+.vscode-test/**
+src/**
+tests/**
+.github/**
+.gitignore
+.vscodeignore
 justfile
+.bumpversion.toml
+RELEASE.md
+REUSE.toml
 tsconfig.json
 esbuild.js
 .eslintrc.json
-.gitignore
-REUSE.toml
 package-lock.json
-*.ts
-*.map
-node_modules/
-.vscode-test/
+node_modules/**
+**/*.ts
+**/*.map
