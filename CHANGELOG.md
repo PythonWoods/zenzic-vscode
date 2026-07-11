@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.1] — 2026-07-11
+### Changed
+- **Infrastructure:** Consolidated major dependency upgrades across the repository. Bumped TypeScript to v7, migrated ESLint to Flat Config (`eslint.config.mjs`), and updated `vscode-languageclient` to v10. Updated GitHub Actions runner environments to latest LTS versions.
+
+
 ## [0.21.0] - 2026-07-11
 
 ### Added
