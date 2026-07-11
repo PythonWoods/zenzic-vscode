@@ -1,0 +1,51 @@
+{
+  "name": "zenzic-vscode",
+  "displayName": "Zenzic",
+  "description": "Visual Studio Code extension for Zenzic LSP",
+  "version": "0.1.0",
+  "publisher": "pythonwoods",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Linters",
+    "Formatters",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onLanguage:mdx"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Zenzic",
+      "properties": {
+        "zenzic.executablePath": {
+          "type": "string",
+          "default": "zenzic",
+          "description": "Path to the Zenzic executable or virtual environment binary."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build -- --production",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "lint": "eslint src --ext ts"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "~5.3.3",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.20.0"
+  }
+}
