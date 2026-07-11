@@ -1,3 +1,9 @@
+<!--
+ SPDX-FileCopyrightText: 2026 PythonWoods
+
+ SPDX-License-Identifier: Apache-2.0
+-->
+
 # Zenzic VS Code Extension: Roadmap & Technical Debt
 
 Questo documento traccia il debito tecnico e i futuri miglioramenti architetturali per l'estensione VS Code (`zenzic-vscode`) e la sua interazione con il Language Server di `zenzic`.
