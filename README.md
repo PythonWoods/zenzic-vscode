@@ -155,16 +155,31 @@ The Zenzic status indicator appears in the bottom-right corner of the VS Code st
 
 ---
 
-## Troubleshooting
+## FAQ & Troubleshooting
 
-**The server fails to start with "executable not found"**
-> Ensure `zenzic` is installed and accessible. Run `zenzic --version` in your terminal. If you use a virtual environment, set `zenzic.executablePath` to the full path of the binary within that environment.
+### 1. Error: `spawn zenzic ENOENT`
+This means the extension cannot find the `zenzic` binary. This is the most common issue and usually happens in two scenarios:
+- **Zenzic is not installed:** Install it using `uv tool install zenzic` or pip.
+- **VS Code cannot see your `$PATH`:** If you installed Zenzic in a project-specific virtual environment (e.g. `.venv/bin/zenzic`) or if you launched VS Code from a GUI/desktop shortcut instead of the terminal, the environment variables might not include the path to `zenzic`.
 
-**Diagnostics are not appearing for my `.md` file**
-> Open the VS Code Output panel (`Ctrl+Shift+U`) and select **"Zenzic Language Server"** from the dropdown. Look for connection or startup errors.
+**Solution:** Explicitly set the path in your configuration (see [Configuration](#configuration)).
+- **User Settings (Global):** Set it to the absolute path (e.g., `/home/user/path/to/repo/.venv/bin/zenzic`).
+- **Workspace Settings (Local):** Use the workspace variable: `"${workspaceFolder}/.venv/bin/zenzic"`.
 
-**I updated Zenzic but the old version is still running**
-> Run **"Zenzic: Restart Server"** from the Command Palette (`Ctrl+Shift+P`).
+### 2. Diagnostics are not appearing for my `.md` file
+Check the Language Server logs:
+1. Open the VS Code Output panel (`Ctrl+Shift+U` or `⌘+Shift+U`).
+2. Select **"Zenzic Language Server"** from the dropdown menu in the top right of the panel.
+3. Look for connection or startup errors. Ensure the file is saved as `.md` or `.mdx` or configured as such in the bottom right corner.
+
+### 3. I updated Zenzic but the old version is still running
+The Language Server process runs independently and needs to be restarted to pick up the new binary.
+**Solution:** Run **"Zenzic: Restart Server"** from the Command Palette (`Ctrl+Shift+P` or `⌘+Shift+P`).
+
+### 4. How do I disable Zenzic for a specific workspace?
+Since Zenzic activates automatically for Markdown and MDX files, you can disable the extension entirely for a specific workspace:
+1. Go to the Extensions view (`Ctrl+Shift+X`).
+2. Find Zenzic, click the gear icon (⚙️), and select **Disable (Workspace)**.
 
 ---
 
