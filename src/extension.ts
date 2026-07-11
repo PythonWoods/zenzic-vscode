@@ -46,8 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const run: Executable = {
             command: executablePath,
-            args: ['lsp'],
-            transport: TransportKind.stdio
+            args: ['lsp']
         };
 
         // A5: debug config is intentionally identical to run. This extension is a
