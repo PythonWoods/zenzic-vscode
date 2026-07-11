@@ -17,22 +17,16 @@
 Before bumping the version, ensure the workspace is pristine:
 
 - [ ] `just verify` — exits 0 (ESLint, TSC, REUSE compliance verified)
-- [ ] `npm run build` — esbuild successfully bundles `out/extension.js` without errors
 - [ ] `CHANGELOG.md` — `[Unreleased]` section contains all new features and fixes
 - [ ] `package.json` — dependencies are secure and lockfile is synced (`npm ci`)
 
-## 2. Bump & Build
+## 2. Bump Version
 
 Do not manually edit version strings. Rely on the automated pipeline.
 
 ```bash
-# 1. Automate version bump (updates package.json, CHANGELOG, and this file)
+# Automate version bump (updates package.json, CHANGELOG, and this file)
 just release <patch|minor|major>
-
-# 2. Package the extension binary
-just verify
-npm run build
-npx @vscode/vsce package
 ```
 
 ## 3. Tag & Push
@@ -46,10 +40,9 @@ git tag -s v0.21.1 -m "Release v0.21.1"
 git push origin v0.21.1
 ```
 
-## 4. Distribute
+## 4. Distribute (Automated)
 
-1. **GitHub Release:** Create a new release on GitHub pointing to the tag. **Crucial:** Upload the generated `.vsix` file as a binary asset.
-2. **VS Marketplace (Public Only):** If the repository is public, publish to the Microsoft Marketplace:
-   ```bash
-   npx @vscode/vsce publish
-   ```
+Distribution is fully automated via GitHub Actions (`.github/workflows/release.yml`).
+
+1. **GitHub Release:** The CI pipeline intercepts the tag push, automatically builds the `.vsix` package, creates the official GitHub Release, and attaches the binary asset. **No manual upload is required.**
+2. **VS Marketplace (Public Only):** Automated Marketplace publication is currently deferred until the repository transitions to public status.
