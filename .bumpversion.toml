@@ -35,3 +35,13 @@ replace = "## [Unreleased]\n\n## [{new_version}] - {now:%Y-%m-%d}"
 filename = "RELEASE.md"
 search = "| **Extension Version** | {current_version} |"
 replace = "| **Extension Version** | {new_version} |"
+
+[[tool.bumpversion.files]]
+filename = "RELEASE.md"
+search = "git tag -s v{current_version} -m \"Release v{current_version}\""
+replace = "git tag -s v{new_version} -m \"Release v{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "RELEASE.md"
+search = "git push origin v{current_version}"
+replace = "git push origin v{new_version}"

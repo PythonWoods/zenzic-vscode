@@ -29,7 +29,7 @@ release-dry part *args:
 pin-core version:
 	sed -i 's/uv tool install zenzic.*/uv tool install zenzic=={{version}}/' README.md
 	sed -i 's/pip install zenzic.*/pip install zenzic=={{version}}/' README.md
-	sed -i 's/| \*\*Pinned Core Version\*\* | .* |/| \*\*Pinned Core Version\*\* | {{version}} |/' RELEASE.md
+	sed -i 's/| \*\*Pinned Core\*\* | .* |/| \*\*Pinned Core\*\* | `zenzic>={{version}}` |/' RELEASE.md
 
 pin-core-dry version:
 	@echo "Would update core version to {{version}} in README.md and RELEASE.md"
@@ -37,6 +37,6 @@ pin-core-dry version:
 versions:
 	#!/usr/bin/env bash
 	set -euo pipefail
-	PINNED=$(grep -oP '\|\s*\*\*Pinned Core Version\*\*\s*\|\s*\K[0-9.]+' RELEASE.md)
+	PINNED=$(grep -oP '\|\s*\*\*Pinned Core\*\*\s*\|\s*`zenzic>=\K[0-9.]+' RELEASE.md)
 	echo "extension:   $(uvx --from 'bump-my-version==1.2.6' bump-my-version show current_version)"
 	echo "core-pinned: $PINNED"
