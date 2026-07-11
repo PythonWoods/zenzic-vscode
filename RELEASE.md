@@ -8,7 +8,7 @@
 
 | Field | Value |
 | :--- | :--- |
-| **Extension Version** | 0.21.0 |
+| **Extension Version** | 0.21.1 |
 | **Pinned Core** | `zenzic>=0.21.0` |
 | **Date** | 2026-07-11 |
 
@@ -42,8 +42,8 @@ npx @vscode/vsce package
 git push origin main
 
 # 2. Create the immutable tag pointing to the build commit
-git tag -s v0.21.0 -m "Release v0.21.0"
-git push origin v0.21.0
+git tag -s v0.21.1 -m "Release v0.21.1"
+git push origin v0.21.1
 ```
 
 ## 4. Distribute
