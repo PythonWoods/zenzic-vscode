@@ -2,7 +2,6 @@ version = 1
 
 [[annotations]]
 path = [
-  ".eslintrc.json",
   ".gitignore",
   "esbuild.js",
   "justfile",
