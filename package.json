@@ -37,6 +37,14 @@
       {
         "command": "zenzic.restartServer",
         "title": "Zenzic: Restart Server"
+      },
+      {
+        "command": "zenzic.startServer",
+        "title": "Zenzic: Start Server"
+      },
+      {
+        "command": "zenzic.stopServer",
+        "title": "Zenzic: Stop Server"
       }
     ],
     "configuration": {

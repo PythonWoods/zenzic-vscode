@@ -105,8 +105,20 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     };
 
+    const stopServer = async () => {
+        if (client) {
+            statusBarItem!.text = '$(sync~spin) Zenzic: Stopping';
+            await client.stop();
+            client = undefined;
+            statusBarItem!.text = '$(stop-circle) Zenzic: Stopped';
+            statusBarItem!.tooltip = 'Zenzic Language Server is stopped';
+        }
+    };
+
     context.subscriptions.push(
-        vscode.commands.registerCommand('zenzic.restartServer', restartServer)
+        vscode.commands.registerCommand('zenzic.restartServer', restartServer),
+        vscode.commands.registerCommand('zenzic.startServer', startServer),
+        vscode.commands.registerCommand('zenzic.stopServer', stopServer)
     );
 
     context.subscriptions.push(
