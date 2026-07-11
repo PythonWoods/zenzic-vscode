@@ -15,7 +15,7 @@ RELEASE.md
 REUSE.toml
 tsconfig.json
 esbuild.js
-.eslintrc.json
+eslint.config.mjs
 package-lock.json
 node_modules/**
 **/*.ts

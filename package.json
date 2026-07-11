@@ -5,7 +5,7 @@
   "version": "0.21.0",
   "publisher": "pythonwoods",
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.91.0"
   },
   "categories": [
     "Linters",
@@ -55,18 +55,20 @@
     "vscode:prepublish": "npm run build -- --production",
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src"
   },
   "dependencies": {
-    "vscode-languageclient": "^9.0.1"
+    "vscode-languageclient": "^10.1.0"
   },
   "devDependencies": {
-    "@types/node": "^18.0.0",
-    "@types/vscode": "^1.80.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.1.1",
+    "@types/vscode": "~1.91.0",
     "@typescript-eslint/eslint-plugin": "^8.63.0",
     "@typescript-eslint/parser": "^8.63.0",
-    "esbuild": "^0.20.0",
-    "eslint": "^8.0.0",
-    "typescript": "~5.3.3"
+    "@typescript/typescript6": "^6.0.2",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.7.0",
+    "typescript": "^7.0.2"
   }
 }
