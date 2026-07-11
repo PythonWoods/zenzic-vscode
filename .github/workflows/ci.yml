@@ -47,7 +47,7 @@ jobs:
         run: npx @vscode/vsce package
 
       - name: Upload VSIX Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: zenzic-vscode-extension
           path: "*.vsix"
