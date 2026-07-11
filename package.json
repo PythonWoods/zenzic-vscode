@@ -2,7 +2,7 @@
   "name": "zenzic-vscode",
   "displayName": "Zenzic",
   "description": "Visual Studio Code extension for Zenzic LSP",
-  "version": "0.21.2",
+  "version": "0.21.3",
   "publisher": "pythonwoods",
   "engines": {
     "vscode": "^1.91.0"

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.3] - 2026-07-11
+
+### Fixed
+- **Extension host:** Prevented `vscode-languageclient` from automatically injecting an unsupported `--stdio` flag into the Zenzic startup arguments, which previously caused a fatal crash and infinite restart loop on startup.
 ## [0.21.2] - 2026-07-11
 
 ## [0.21.2] — 2026-07-11
