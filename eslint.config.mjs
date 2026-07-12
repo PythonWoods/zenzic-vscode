@@ -2,36 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const Module = require('module');
-
-// ─── TypeScript 7 / typescript-eslint v8 compatibility shim ──────────────────
-//
-// B1 KNOWN LIMITATION: TypeScript 7 rewrote the compiler in Go and removed the
-// stable programmatic API that typescript-eslint v8 depends on.
-//
-// Workaround: intercept CJS require('typescript') calls made by the eslint plugins
-// and redirect them to @typescript/typescript6 — Microsoft's official bridge shim
-// that re-exposes the TypeScript 6.x programmatic API alongside the TS7 compiler.
-//
-// REMOVAL CRITERIA: Remove this block (and @typescript/typescript6 + @eslint/js
-// from devDependencies) once typescript-eslint releases a version with native TS7
-// support (expected with typescript-eslint v9 / TypeScript 7.1).
-//
-// WARNING: Module._load is a Node.js internal API — not part of the public
-// contract. It may break on Node.js major version updates. If it breaks, the fix
-// is the same: wait for official typescript-eslint TS7 support.
-// ─────────────────────────────────────────────────────────────────────────────
-const originalLoad = Module._load;
-Module._load = function (request, parent, isMain) {
-  if (request === 'typescript') {
-    return originalLoad('@typescript/typescript6', parent, isMain);
-  }
-  return originalLoad(request, parent, isMain);
-};
-
-// Dynamically import plugins so they use the overridden loader hook above.
+// Dynamically import plugins so they use the standard loader.
 const typescriptEslint = (await import('@typescript-eslint/eslint-plugin')).default;
 const typescriptParser = (await import('@typescript-eslint/parser')).default;
 const js = (await import('@eslint/js')).default;
