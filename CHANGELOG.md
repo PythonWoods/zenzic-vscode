@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.22.0] - 2026-07-12
 
+### Changed
+
+- **Core Dependency:** Pinned `zenzic>=0.22.0`. The extension now requires Zenzic Core v0.22.0, which grants the Language Server (ZLS) real-time global topological awareness via the Virtual Site Map (VSM).
+
+### Added
+
+- **Real-Time Structural Validation (via Core):** Upgrading to Core v0.22.0 unlocks live feedback for structural Z-Codes (`Z101 Broken Link`, `Z104 File Not Found`, `Z105 Absolute Path`) directly in the editor as files are created or deleted in the workspace.
+
+### Documentation
+
+- Translated `ROADMAP.md` entirely into English to comply with ADR-022 (English-Only documentation invariant).
+- Marked the Real-Time Global Context (VSM) milestone as `Completed` and scheduled Code Actions (Quick Fixes) for `v0.23.0`.
+
 ## [0.21.5] - 2026-07-12
 
 ## [0.21.4] - 2026-07-11
