@@ -6,33 +6,34 @@
 
 # Zenzic VS Code Extension: Roadmap & Technical Debt
 
-Questo documento traccia il debito tecnico e i futuri miglioramenti architetturali per l'estensione VS Code (`zenzic-vscode`) e la sua interazione con il Language Server di `zenzic`.
+This document tracks the technical debt and future architectural improvements for the VS Code extension (`zenzic-vscode`) and its interaction with the `zenzic` Language Server.
 
-## Priorità 1: Supporto al Contesto Globale (VSM) in Real-time
-**Problema:**
-Oggi il `zenzic lsp` è *stateless* e analizza i file singolarmente in memoria. Di conseguenza, non possiede un *Virtual Site Map* (VSM) e ignora tutte le regole di tipo strutturale (`Z101 Broken Link`, `Z104 File Not Found`, `Z105 Absolute Path`).
-**Soluzione:**
-- Gestire il `workspace/workspaceFolders` nell'Initialize.
-- Aggiungere un thread in background che calcoli un VSM globale in memoria e reagisca a `workspace/didChangeWatchedFiles`.
-- Sfruttare la cache del VSM nel metodo `check_vsm` delle regole affinché l'utente abbia un feedback immediato anche sui link rotti.
+## Recent Releases
 
-## Priorità 2: Code Actions (Quick Fixes)
-**Problema:**
-Mentre la CLI può correggere in automatico tramite `zenzic fix` (ad esempio inserendo gli attributi mancanti come in `Z121` o rimuovendo commenti morti `Z603`), l'estensione VS Code è puramente passiva.
-**Soluzione:**
-- Implementare `textDocument/codeAction` nel backend.
-- Suggerire *Quick Fixes* cliccabili dall'utente per tutte le regole che espongono `fixable=True` in `CODE_DEFINITIONS`.
+### [v0.22.0] Real-Time Global Context (VSM) Support
+**Status: Completed**
+- Processed `workspace/workspaceFolders` during initialization.
+- Implemented a synchronous in-memory Virtual Site Map (VSM) calculation.
+- Integrated $O(1)$ incremental updates via `workspace/didChangeWatchedFiles` without background threads.
+- Enabled real-time feedback for structural rules (`Z101 Broken Link`, `Z104 File Not Found`, `Z105 Absolute Path`).
 
-## Priorità 3: DQS Scoring e UI del Workspace
-**Problema:**
-Il punteggio DQS (Documentation Quality Score) come la regola `Z502` o `Z504` richiede l'analisi completa della suite. L'estensione non riporta questa metrica vitale.
-**Soluzione:**
-- Integrare un pannello laterale (Tree View) specifico di Zenzic.
-- Visualizzare il punteggio globale aggiornato (magari interfacciandosi con un comando background `zenzic score --json`).
+## [v0.23.0] Planned: Code Actions (Quick Fixes)
+**Problem:**
+While the CLI can automatically fix issues via `zenzic fix` (e.g., inserting missing attributes like `Z121` or removing dead comments `Z603`), the VS Code extension is purely passive.
+**Solution:**
+- Implement `textDocument/codeAction` in the backend.
+- Suggest clickable Quick Fixes to the user for all rules exposing `fixable=True` in `CODE_DEFINITIONS`.
 
-## Priorità 4: Autocompletamento Configurazione (JSON Schema)
-**Problema:**
-Nessun Intellisense dedicato quando l'utente modifica `.zenzic.toml`.
-**Soluzione:**
-- Generare e ospitare un JSON Schema ufficiale per Zenzic.
-- Aggiornare `package.json` di `zenzic-vscode` usando `jsonValidation` (e `toml`) per iniettare l'autocompletamento per la configurazione.
+## Priority: DQS Scoring and Workspace UI
+**Problem:**
+The Documentation Quality Score (DQS) requires full suite analysis (rules like `Z502` or `Z504`). The extension currently does not report this vital metric.
+**Solution:**
+- Integrate a Zenzic-specific sidebar panel (Tree View).
+- Display the globally updated score (potentially by interfacing with a background command `zenzic score --json`).
+
+## Priority: Configuration Autocompletion (JSON Schema)
+**Problem:**
+There is no dedicated Intellisense when the user modifies `.zenzic.toml`.
+**Solution:**
+- Generate and host an official JSON Schema for Zenzic.
+- Update `package.json` in `zenzic-vscode` using `jsonValidation` (and `toml`) to inject autocompletion for the configuration file.
