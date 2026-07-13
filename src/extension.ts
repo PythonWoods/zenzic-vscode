@@ -54,13 +54,16 @@ export async function activate(context: vscode.ExtensionContext) {
         // zenzic process, not through a dedicated debug launcher.
         const serverOptions: ServerOptions = { run, debug: run };
 
+        const outputChannel = vscode.window.createOutputChannel('Zenzic Language Server');
+
         const clientOptions: LanguageClientOptions = {
             documentSelector: [
                 { scheme: 'file', language: 'markdown' },
                 { scheme: 'file', language: 'mdx' },
                 { scheme: 'untitled', language: 'markdown' },
                 { scheme: 'untitled', language: 'mdx' }
-            ]
+            ],
+            outputChannel
         };
 
         client = new LanguageClient(
