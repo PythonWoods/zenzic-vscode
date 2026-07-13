@@ -8,8 +8,7 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    Executable,
-    TransportKind
+    Executable
 } from 'vscode-languageclient/node';
 
 // A4 fix: typed as | undefined — initialized in activate(), disposed via subscriptions.
@@ -54,7 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // zenzic process, not through a dedicated debug launcher.
         const serverOptions: ServerOptions = { run, debug: run };
 
-        const outputChannel = vscode.window.createOutputChannel('Zenzic Language Server');
+        const outputChannel = vscode.window.createOutputChannel('Zenzic Language Server', { log: true });
 
         const clientOptions: LanguageClientOptions = {
             documentSelector: [
