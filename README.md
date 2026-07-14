@@ -32,7 +32,7 @@ code --install-extension pythonwoods.zenzic-vscode
 
 ### Option B — GitHub Releases (Current Method)
 
-1. Go to the [**Releases page**](https://github.com/PythonWoods/zenzic-vscode/releases/latest) and download the latest `.vsix` file (e.g. `zenzic-vscode-0.22.2.vsix`).
+1. Go to the [**Releases page**](https://github.com/PythonWoods/zenzic-vscode/releases/latest) and download the latest `.vsix` file (e.g. `zenzic-vscode-0.22.3.vsix`).
 
 2. Install it from the terminal:
    ```bash
