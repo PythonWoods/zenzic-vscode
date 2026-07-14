@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.22.3] - 2026-07-14
 
+### Highlights
+This release synchronizes the VS Code extension with the **Zenzic Core v0.22.3** patch, restoring 100% diagnostic parity between the editor and the CLI.
+
+### Core Improvements Inherited
+By updating to `v0.22.3` (and ensuring your local Zenzic installation is updated to `>=0.22.3`), the Language Server now correctly surfaces the following real-time diagnostics that were previously masked in the editor:
+- **`Z603` (Dead Suppression):** Unused `zenzic:ignore` comments are now highlighted in real-time.
+- **`Z501` / `Z502` (Content Hygiene):** Placeholder text and short content warnings now correctly fire even in workspaces without a `.zenzic.toml` configuration file.
+- **Strict URP Ordering:** Security path traversal attempts (`Z202`/`Z203`) are now correctly prioritized over standard broken link (`Z101`) errors in the editor UI.
+
 ## [0.22.2] - 2026-07-14
 
 ## [0.22.1] - 2026-07-14
