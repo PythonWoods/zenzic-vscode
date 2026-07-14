@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import {
     LanguageClient,
@@ -27,24 +28,53 @@ export async function activate(context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration('zenzic');
         const executablePath = config.get<string>('executablePath') || 'zenzic';
 
-        // A6 fix: pre-validate absolute paths before spawning the process so the
-        // error message is immediate and user-friendly rather than an opaque LSP crash.
-        if (executablePath !== 'zenzic') {
-            try {
-                await fs.promises.access(executablePath, fs.constants.X_OK);
-            } catch {
-                statusBarItem!.text = '$(error) Zenzic: Not Found';
-                statusBarItem!.tooltip = `Executable not found at: ${executablePath}`;
-                vscode.window.showErrorMessage(
-                    `Zenzic executable not found at '${executablePath}'. ` +
-                    `Please check the 'zenzic.executablePath' setting.`
-                );
-                return;
+        // A6 fix: resolve the executable path (absolute or via PATH) before spawning
+        // to provide a user-friendly error message instead of an opaque LSP crash.
+        const resolveExecutable = async (cmd: string): Promise<string | undefined> => {
+            const isWindows = process.platform === 'win32';
+            const exts = isWindows ? ['.exe', '.cmd', '.bat', ''] : [''];
+            
+            const checkPath = async (p: string): Promise<string | undefined> => {
+                for (const ext of exts) {
+                    try {
+                        await fs.promises.access(p + ext, fs.constants.X_OK);
+                        return p + ext;
+                    } catch {
+                        // ignore and try next extension or path
+                    }
+                }
+                return undefined;
+            };
+
+            if (path.isAbsolute(cmd) || cmd.includes(path.sep) || (isWindows && cmd.includes('/'))) {
+                return await checkPath(cmd);
             }
+
+            const paths = (process.env.PATH || '').split(path.delimiter);
+            for (const dir of paths) {
+                if (!dir) continue;
+                const fullPath = path.join(dir, cmd);
+                const resolved = await checkPath(fullPath);
+                if (resolved) return resolved;
+            }
+            return undefined;
+        };
+
+        const resolvedPath = await resolveExecutable(executablePath);
+
+        if (!resolvedPath) {
+            statusBarItem!.text = '$(error) Zenzic: Not Found';
+            statusBarItem!.tooltip = `Executable not found: ${executablePath}`;
+            vscode.window.showErrorMessage(
+                `Zenzic executable not found: '${executablePath}'. ` +
+                `Please ensure zenzic is installed (e.g., 'uv tool install zenzic') ` +
+                `or set the correct path in 'zenzic.executablePath'.`
+            );
+            return;
         }
 
         const run: Executable = {
-            command: executablePath,
+            command: resolvedPath,
             args: ['lsp']
         };
 
