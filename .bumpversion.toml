@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [tool.bumpversion]
-current_version = "0.22.1"
+current_version = "0.22.2"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 commit = true
@@ -45,3 +45,11 @@ replace = "git tag -s v{new_version} -m \"Release v{new_version}\""
 filename = "RELEASE.md"
 search = "git push origin v{current_version}"
 replace = "git push origin v{new_version}"
+
+# ── README.md ─────────────────────────────────────────────────────────────────
+
+# Option B: example .vsix filename shown to the user
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "zenzic-vscode-{current_version}.vsix"
+replace = "zenzic-vscode-{new_version}.vsix"

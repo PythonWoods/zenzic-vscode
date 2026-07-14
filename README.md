@@ -32,7 +32,7 @@ code --install-extension pythonwoods.zenzic-vscode
 
 ### Option B — GitHub Releases (Current Method)
 
-1. Go to the [**Releases page**](https://github.com/PythonWoods/zenzic-vscode/releases/latest) and download the latest `.vsix` file (e.g. `zenzic-vscode-0.21.2.vsix`).
+1. Go to the [**Releases page**](https://github.com/PythonWoods/zenzic-vscode/releases/latest) and download the latest `.vsix` file (e.g. `zenzic-vscode-0.22.2.vsix`).
 
 2. Install it from the terminal:
    ```bash
@@ -46,16 +46,27 @@ code --install-extension pythonwoods.zenzic-vscode
 
 ### Option C — Build from Source
 
+> [!IMPORTANT]
+> The extension is a **thin client**: it requires the `zenzic` Python package to be installed
+> **before** activating. Install the core engine first (step 1 below).
+
 ```bash
-# Clone the repository
+# Step 1 — Install the Zenzic core engine (prerequisite)
+uv tool install zenzic==0.22.2
+# or: pip install zenzic==0.22.2
+
+# Verify the binary is available on your PATH
+zenzic --version
+
+# Step 2 — Clone and build the extension
 git clone https://github.com/PythonWoods/zenzic-vscode.git
 cd zenzic-vscode
 
-# Install dependencies and package the extension
+# Install Node.js dependencies and package the extension
 npm ci
 npx @vscode/vsce package
 
-# Install the generated .vsix
+# Step 3 — Install the generated .vsix
 code --install-extension zenzic-vscode-*.vsix
 ```
 
@@ -68,13 +79,13 @@ This extension is a **thin client**: it delegates all analysis to the Zenzic eng
 ### Install Zenzic (recommended — via `uv`)
 
 ```bash
-uv tool install zenzic==0.22.1
+uv tool install zenzic==0.22.2
 ```
 
 ### Install via `pip`
 
 ```bash
-pip install zenzic==0.22.1
+pip install zenzic==0.22.2
 ```
 
 ### Verify the installation
@@ -158,13 +169,24 @@ The Zenzic status indicator appears in the bottom-right corner of the VS Code st
 ## FAQ & Troubleshooting
 
 ### 1. Error: `spawn zenzic ENOENT`
-This means the extension cannot find the `zenzic` binary. This is the most common issue and usually happens in two scenarios:
-- **Zenzic is not installed:** Install it using `uv tool install zenzic==0.22.1
-- **VS Code cannot see your `$PATH`:** If you installed Zenzic in a project-specific virtual environment (e.g. `.venv/bin/zenzic`) or if you launched VS Code from a GUI/desktop shortcut instead of the terminal, the environment variables might not include the path to `zenzic`.
+This means the extension cannot find the `zenzic` binary. Common causes:
 
-**Solution:** Explicitly set the path in your configuration (see [Configuration](#configuration)).
-- **User Settings (Global):** Set it to the absolute path (e.g., `/home/user/path/to/repo/.venv/bin/zenzic`).
-- **Workspace Settings (Local):** Use the workspace variable: `"${workspaceFolder}/.venv/bin/zenzic"`.
+- **Zenzic is not installed:** Install it with `uv tool install zenzic==0.22.2`.
+- **VS Code cannot see your `$PATH`:** If you launched VS Code from a GUI/desktop shortcut instead of the terminal, it may not inherit your shell environment.
+- **VS Code installed as a snap or flatpak:** The VS Code process runs in an isolated sandbox whose `$PATH` does not include `~/.local/bin`, so `uv tool install` succeeds but the binary stays invisible to the extension.
+
+**Solution A — Automatic (recommended):** Click **"Install with uv"** in the error popup. Once the terminal finishes, click **"Set Path Automatically"** in the follow-up notification. The extension will run `uv tool dir --bin` to detect the exact binary location and configure `zenzic.executablePath` for you.
+
+**Solution B — Manual:** Find the binary path and set it explicitly:
+```bash
+uv tool dir --bin   # prints the directory, e.g. /home/user/.local/bin
+```
+Then add to your VS Code settings:
+```jsonc
+"zenzic.executablePath": "/home/user/.local/bin/zenzic"
+```
+
+
 
 ### 2. Diagnostics are not appearing for my `.md` file
 Check the Language Server logs:
