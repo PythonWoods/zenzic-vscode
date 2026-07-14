@@ -6,3 +6,4 @@ dist/
 .DS_Store
 .architect/
 .zenzic_cache/
+example/
