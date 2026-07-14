@@ -68,13 +68,13 @@ This extension is a **thin client**: it delegates all analysis to the Zenzic eng
 ### Install Zenzic (recommended — via `uv`)
 
 ```bash
-uv tool install zenzic==0.22.0
+uv tool install zenzic==0.22.1
 ```
 
 ### Install via `pip`
 
 ```bash
-pip install zenzic==0.22.0
+pip install zenzic==0.22.1
 ```
 
 ### Verify the installation
@@ -159,7 +159,7 @@ The Zenzic status indicator appears in the bottom-right corner of the VS Code st
 
 ### 1. Error: `spawn zenzic ENOENT`
 This means the extension cannot find the `zenzic` binary. This is the most common issue and usually happens in two scenarios:
-- **Zenzic is not installed:** Install it using `uv tool install zenzic==0.22.0
+- **Zenzic is not installed:** Install it using `uv tool install zenzic==0.22.1
 - **VS Code cannot see your `$PATH`:** If you installed Zenzic in a project-specific virtual environment (e.g. `.venv/bin/zenzic`) or if you launched VS Code from a GUI/desktop shortcut instead of the terminal, the environment variables might not include the path to `zenzic`.
 
 **Solution:** Explicitly set the path in your configuration (see [Configuration](#configuration)).
