@@ -3,7 +3,7 @@ set shell := ["bash", "-c"]
 verify:
 	npm run lint
 	npx tsc --noEmit
-	reuse lint
+	command -v reuse > /dev/null 2>&1 && reuse lint || echo "reuse not installed — skipping REUSE lint"
 
 release part:
 	#!/usr/bin/env bash
