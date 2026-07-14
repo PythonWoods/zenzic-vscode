@@ -64,12 +64,61 @@ export async function activate(context: vscode.ExtensionContext) {
 
         if (!resolvedPath) {
             statusBarItem!.text = '$(error) Zenzic: Not Found';
-            statusBarItem!.tooltip = `Executable not found: ${executablePath}`;
-            vscode.window.showErrorMessage(
+            statusBarItem!.tooltip = `Executable not found: '${executablePath}'. Run: uv tool install zenzic`;
+            // Offer actionable shortcuts so the user can resolve the issue without
+            // leaving the editor. "Install with uv" opens the terminal with the
+            // recommended command; "Open Docs" navigates to the README anchor.
+            const action = await vscode.window.showErrorMessage(
                 `Zenzic executable not found: '${executablePath}'. ` +
-                `Please ensure zenzic is installed (e.g., 'uv tool install zenzic') ` +
-                `or set the correct path in 'zenzic.executablePath'.`
+                `Install the core engine first, then restart VS Code.`,
+                'Install with uv',
+                'Open Docs'
             );
+            if (action === 'Install with uv') {
+                const terminal = vscode.window.createTerminal('Zenzic Setup');
+                terminal.show();
+                terminal.sendText('uv tool install zenzic', false);
+
+                // VS Code installed as a snap/flatpak runs in an isolated process
+                // whose PATH does not include the user's ~/.local/bin. After
+                // installing via uv, the binary is reachable but invisible to the
+                // extension. Offer automatic path detection via `uv tool dir --bin`
+                // so the user never has to locate the directory manually.
+                const followUp = await vscode.window.showInformationMessage(
+                    'After the installation completes in the terminal, click ' +
+                    '"Set Path Automatically" so Zenzic can locate the binary ' +
+                    '(required if VS Code is installed as a snap or flatpak).',
+                    'Set Path Automatically',
+                    'Dismiss'
+                );
+                if (followUp === 'Set Path Automatically') {
+                    try {
+                        const cp = await import('child_process');
+                        const binDir: string = await new Promise((resolve, reject) => {
+                            cp.exec('uv tool dir --bin', (err, stdout) => {
+                                if (err) { reject(err); } else { resolve(stdout.trim()); }
+                            });
+                        });
+                        const zenzicBin = path.join(binDir, 'zenzic');
+                        const cfg = vscode.workspace.getConfiguration('zenzic');
+                        await cfg.update('executablePath', zenzicBin, vscode.ConfigurationTarget.Global);
+                        vscode.window.showInformationMessage(
+                            `Zenzic path set to: ${zenzicBin}. Starting server…`
+                        );
+                        // Restart so the updated executablePath is picked up immediately.
+                        await restartServer();
+                    } catch {
+                        vscode.window.showErrorMessage(
+                            'Could not auto-detect the uv tools directory. ' +
+                            'Set "zenzic.executablePath" manually in your VS Code settings.'
+                        );
+                    }
+                }
+            } else if (action === 'Open Docs') {
+                vscode.env.openExternal(vscode.Uri.parse(
+                    'https://github.com/PythonWoods/zenzic-vscode#requirements'
+                ));
+            }
             return;
         }
 
@@ -77,6 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
             command: resolvedPath,
             args: ['lsp']
         };
+
 
         // A5: debug config is intentionally identical to run. This extension is a
         // thin client: server-side debugging is done by attaching directly to the

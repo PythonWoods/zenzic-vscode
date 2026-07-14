@@ -1,5 +1,16 @@
 set shell := ["bash", "-c"]
 
+# just — developer workflow for zenzic-vscode.
+#
+# Quick reference:
+#   just verify          — lint + tsc (pre-push gate)
+#   just release <part>  — bump version (patch|minor|major)
+#   just release-dry <p> — dry-run bump, no file writes
+#   just pin-core <ver>  — realign Zenzic Core pin in README + RELEASE.md
+#   just pin-core-dry    — show what pin-core would change (no writes)
+#   just versions        — show extension version and pinned core version
+#   just clean           — remove generated artefacts (out/, *.vsix, .tsbuildinfo)
+
 verify:
 	npm run lint
 	npx tsc --noEmit
@@ -26,17 +37,54 @@ release-dry part *args:
 		uvx --from "bump-my-version==1.2.6" bump-my-version bump {{part}} --dry-run --allow-dirty --verbose
 	fi
 
-pin-core version:
-	sed -i 's/uv tool install zenzic.*/uv tool install zenzic=={{version}}/' README.md
-	sed -i 's/pip install zenzic.*/pip install zenzic=={{version}}/' README.md
-	sed -i 's/| \*\*Pinned Core\*\* | .* |/| \*\*Pinned Core\*\* | `zenzic>={{version}}` |/' RELEASE.md
-
-pin-core-dry version:
-	@echo "Would update core version to {{version}} in README.md and RELEASE.md"
-
+# Show the current extension version and the pinned Zenzic Core version
 versions:
 	#!/usr/bin/env bash
 	set -euo pipefail
-	PINNED=$(grep -oP '\|\s*\*\*Pinned Core\*\*\s*\|\s*`zenzic>=\K[0-9.]+' RELEASE.md)
+	PINNED=$(grep -oP '\*\*Pinned Core\*\* \| `zenzic>=\K[0-9.]+' RELEASE.md)
 	echo "extension:   $(uvx --from 'bump-my-version==1.2.6' bump-my-version show current_version)"
 	echo "core-pinned: $PINNED"
+
+# Realign the Zenzic Core pin in README.md and RELEASE.md.
+# Usage: just pin-core <version>
+pin-core version:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	if [[ ! "{{version}}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		echo "Invalid version '{{version}}'. Use MAJOR.MINOR.PATCH"
+		exit 2
+	fi
+	if [ -n "$(git status --porcelain)" ]; then
+		echo "Working tree is not clean. Commit or stash changes before pin-core."
+		exit 3
+	fi
+	echo "Aligning Zenzic Core pin to {{version}}..."
+	sed -i 's/uv tool install zenzic==[0-9.]*/uv tool install zenzic=={{version}}/g' README.md
+	sed -i 's/pip install zenzic==[0-9.]*/pip install zenzic=={{version}}/g' README.md
+	sed -i 's/| \*\*Pinned Core\*\* | .* |/| **Pinned Core** | `zenzic>={{version}}` |/' RELEASE.md
+	git add README.md RELEASE.md
+	git commit -S -s -m "chore(deps): pin zenzic core to {{version}}"
+
+# Simulate a Zenzic Core pin realignment and print the diff without writing files.
+# Usage: just pin-core-dry <version>
+pin-core-dry version:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	if [[ ! "{{version}}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		echo "Invalid version '{{version}}'. Use MAJOR.MINOR.PATCH"
+		exit 2
+	fi
+	echo "==> Dry-run: changes that 'just pin-core {{version}}' would apply"
+	echo ""
+	echo "--- README.md ---"
+	grep -n 'zenzic==[0-9.]*' README.md \
+		| sed 's/zenzic==[0-9.]*/zenzic=={{version}}/' || echo "  (no occurrences)"
+	echo ""
+	echo "--- RELEASE.md ---"
+	grep -n 'Pinned Core' RELEASE.md \
+		| sed 's/zenzic>=[0-9.]*/zenzic>={{version}}/' || echo "  (no occurrences)"
+
+# Remove generated artefacts
+clean:
+	rm -rf out/ .tsbuildinfo
+	find . -maxdepth 1 -name '*.vsix' -delete
