@@ -22,7 +22,7 @@ jobs:
 
       - name: Setup Node.js
         # C1 fix: aligned with ci.yml — was setup-node@v4
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'npm'
