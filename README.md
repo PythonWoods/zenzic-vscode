@@ -33,7 +33,7 @@ Modify a heading in one file, and Zenzic instantly invalidates any broken links 
 Hardcoded secrets are flagged in milliseconds using strict RE2 validation, preventing leaks before the file is even saved.
 
 ```markdown
-  export GITHUB_TOKEN="ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890"
+  export GITHUB_TOKEN="ghp_************************************"
                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   Z201: Critical security violation. GitHub Personal Access Token detected.
 ```
