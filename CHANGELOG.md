@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-07-18
+
 ### Changed
 - **LSP Diagnostics Integration:** Updated to support Zenzic Core's new graph-wide diagnostic sync. Modifications to a single buffer now immediately trigger validation updates across dependent files.
 - **Hover Resolution:** Hover metadata is now accurately mapped and presented based on the exact character position by querying the underlying deterministic Virtual Site Map via the Zenzic Language Server.
