@@ -18,7 +18,7 @@
     "static analysis",
     "security"
   ],
-  "icon": "assets/zenzic-icon.png",
+  "icon": "images/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/PythonWoods/zenzic-vscode.git"

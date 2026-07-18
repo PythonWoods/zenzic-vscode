@@ -13,14 +13,12 @@ This extension is a strictly **Thin Client**. It contains zero parsing logic, ze
 ### Real-Time Topological Validation
 Modify a heading in one file, and watch Zenzic instantly invalidate any broken links pointing to that anchor across your entire workspace.
 
-*(Placeholder: Insert `images/demo-topology.gif` here showing a cross-file anchor rename and instant Z102 error)*
-![Topology Demo](images/demo-topology.gif)
+
 
 ### Instant Credential Scanning
 Hardcoded secrets are flagged in milliseconds using strict RE2 validation, preventing leaks before the file is even saved.
 
-*(Placeholder: Insert `images/demo-security.gif` here showing a GitHub token being pasted and instantly flagged with Z201)*
-![Security Demo](images/demo-security.gif)
+
 
 ### Deterministic Quality Score (DQS)
 Hover over any diagnostic to see the exact Z-Code, the Document Quality Score penalty, and deterministic remediation guidance.
