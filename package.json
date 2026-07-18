@@ -2,10 +2,10 @@
   "name": "zenzic-vscode",
   "displayName": "Zenzic",
   "description": "Visual Studio Code extension for Zenzic LSP",
-  "version": "0.22.3",
+  "version": "0.23.0",
   "publisher": "pythonwoods",
   "engines": {
-    "vscode": "^1.91.0"
+    "vscode": "^1.125.0"
   },
   "categories": [
     "Linters",
@@ -71,9 +71,9 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.1.1",
-    "@types/vscode": "~1.91.0",
-    "@typescript-eslint/eslint-plugin": "^8.63.0",
-    "@typescript-eslint/parser": "^8.63.0",
+    "@types/vscode": "~1.125.0",
+    "@typescript-eslint/eslint-plugin": "^8.64.0",
+    "@typescript-eslint/parser": "^8.64.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.7.0",
     "typescript": "~6.0.2"

@@ -10,6 +10,13 @@ This document tracks the technical debt and future architectural improvements fo
 
 ## Recent Releases
 
+### [v0.22.x] ZLS Foundation & Hover Support
+**Status: Completed**
+- Established Zenzic Language Server foundation inside Python Core with zero subprocesses and strictly adhering to RE2 regex discipline.
+- Created `VirtualBufferOverlay` within the Virtual Site Map to allow the Uniform Resolver Pipeline (URP) to test in-memory changes instantly.
+- Added `textDocument/hover` provider, mapping DQS penalty metrics directly to diagnostics using `CODE_DEFINITIONS`.
+- Enforced zero AST parsing inside the TypeScript client wrapper.
+
 ### [v0.22.0] Real-Time Global Context (VSM) Support
 **Status: Completed**
 - Processed `workspace/workspaceFolders` during initialization.
