@@ -48,8 +48,8 @@ replace = "git push origin v{new_version}"
 
 # ── README.md ─────────────────────────────────────────────────────────────────
 
-# Option B: example .vsix filename shown to the user
+# Update the required Zenzic Python Core version in the requirements section
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = "zenzic-vscode-{current_version}.vsix"
-replace = "zenzic-vscode-{new_version}.vsix"
+search = "(v{current_version} or higher)"
+replace = "(v{new_version} or higher)"

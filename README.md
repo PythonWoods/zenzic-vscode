@@ -1,210 +1,62 @@
-<!--
-SPDX-FileCopyrightText: 2026 PythonWoods
+# Zenzic: Deterministic Document Integrity
 
-SPDX-License-Identifier: Apache-2.0
--->
+Zenzic is a strict, deterministic static analysis engine for documentation graphs. 
 
-# Zenzic — VS Code Extension
+This extension brings the exact same $O(N)$ validation engine used in your CI/CD pipelines directly into your authoring environment, providing sub-50ms topological feedback as you type.
 
-> Real-time static analysis and credential scanning for Markdown and MDX, powered by the Zenzic Language Server.
+## Thin Client Architecture
 
-[![CI](https://github.com/PythonWoods/zenzic-vscode/actions/workflows/ci.yml/badge.svg)](https://github.com/PythonWoods/zenzic-vscode/actions/workflows/ci.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/PythonWoods/zenzic-vscode?label=release)](https://github.com/PythonWoods/zenzic-vscode/releases/latest)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![REUSE compliant](https://img.shields.io/badge/REUSE-compliant-green.svg)](https://reuse.software/)
-
----
-
-## Installation
-
-### Option A — VS Code Marketplace
-
-> [!NOTE]
-> Marketplace publication is coming soon. The extension is currently distributed via GitHub Releases (see Option B below).
-
-Once published, install with one click from the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/) by searching for **"Zenzic"**, or via the CLI:
-
-```bash
-code --install-extension pythonwoods.zenzic-vscode
-```
-
----
-
-### Option B — GitHub Releases (Current Method)
-
-1. Go to the [**Releases page**](https://github.com/PythonWoods/zenzic-vscode/releases/latest) and download the latest `.vsix` file (e.g. `zenzic-vscode-0.23.0.vsix`).
-
-2. Install it from the terminal:
-   ```bash
-   code --install-extension zenzic-vscode-<version>.vsix
-   ```
-   Or from within VS Code: `Ctrl+Shift+P` → **"Extensions: Install from VSIX..."**
-
-3. Reload VS Code. The Zenzic status indicator will appear in the bottom-right status bar.
-
----
-
-### Option C — Build from Source
-
-> [!IMPORTANT]
-> The extension is a **thin client**: it requires the `zenzic` Python package to be installed
-> **before** activating. Install the core engine first (step 1 below).
-
-```bash
-# Step 1 — Install the Zenzic core engine (prerequisite)
-uv tool install zenzic==0.23.0
-# or: pip install zenzic==0.23.0
-
-# Verify the binary is available on your PATH
-zenzic --version
-
-# Step 2 — Clone and build the extension
-git clone https://github.com/PythonWoods/zenzic-vscode.git
-cd zenzic-vscode
-
-# Install Node.js dependencies and package the extension
-npm ci
-npx @vscode/vsce package
-
-# Step 3 — Install the generated .vsix
-code --install-extension zenzic-vscode-*.vsix
-```
-
----
-
-## Requirements
-
-This extension is a **thin client**: it delegates all analysis to the Zenzic engine process running on your machine. You must have the Zenzic core installed before the extension can function.
-
-### Install Zenzic (recommended — via `uv`)
-
-```bash
-uv tool install zenzic==0.23.0
-```
-
-### Install via `pip`
-
-```bash
-pip install zenzic==0.23.0
-```
-
-### Verify the installation
-
-```bash
-zenzic --version
-```
-
-The extension will locate the `zenzic` binary automatically if it is on your system `$PATH`. For virtual-environment setups, see [Configuration](#configuration) below.
-
----
+This extension is a strictly **Thin Client**. It contains zero parsing logic, zero regex engines, and zero validation rules. It communicates via the Language Server Protocol (LSP) over standard I/O directly with the Zenzic Python binary installed on your system.
 
 ## Features
 
-The extension provides a seamless bridge between the high-performance Zenzic engine and your editor:
+### Real-Time Topological Validation
+Modify a heading in one file, and watch Zenzic instantly invalidate any broken links pointing to that anchor across your entire workspace.
 
-| Feature | Description |
-| :--- | :--- |
-| **Sub-50ms Diagnostics** | Near-instantaneous linting and analysis feedback as you type, with zero manual configuration. |
-| **Credential Scanning** | Automatic detection of secrets and security vulnerabilities, surfaced as inline diagnostics and mapped to Zenzic's Exit 2 credential scanning system. |
-| **Structural Analysis** | Deep AST-level inspection and structural validation of Markdown and MDX files without relying on external Node.js parsers. |
-| **Multi-scheme Support** | Works on both saved files (`file://`) and unsaved buffers (`untitled://`). |
-| **Supported Languages** | `markdown`, `mdx` |
+*(Placeholder: Insert `images/demo-topology.gif` here showing a cross-file anchor rename and instant Z102 error)*
+![Topology Demo](images/demo-topology.gif)
 
----
+### Instant Credential Scanning
+Hardcoded secrets are flagged in milliseconds using strict RE2 validation, preventing leaks before the file is even saved.
 
-## Configuration
+*(Placeholder: Insert `images/demo-security.gif` here showing a GitHub token being pasted and instantly flagged with Z201)*
+![Security Demo](images/demo-security.gif)
 
-All settings are available via **File → Preferences → Settings** (search for `zenzic`) or by editing your `settings.json` directly.
+### Deterministic Quality Score (DQS)
+Hover over any diagnostic to see the exact Z-Code, the Document Quality Score penalty, and deterministic remediation guidance.
 
-### `zenzic.executablePath`
+## Requirements
 
-The path to the Zenzic binary used to launch the Language Server.
+Because this is a thin client, **you must install the Zenzic Python Core (v0.23.0 or higher)** on your machine.
 
-| Value | Description |
-| :--- | :--- |
-| `"zenzic"` *(default)* | Resolves the binary from your system `$PATH`. |
-| Absolute path | Points directly to a specific binary. |
-| Workspace-relative path | Use VS Code's `${workspaceFolder}` variable for project-local environments. |
+We recommend using `uv`:
 
-**Examples:**
-
-```jsonc
-// settings.json
-
-// System-wide installation (default — no configuration needed)
-"zenzic.executablePath": "zenzic"
-
-// Project-local virtual environment (uv or venv)
-"zenzic.executablePath": "${workspaceFolder}/.venv/bin/zenzic"
-
-// Explicit absolute path
-"zenzic.executablePath": "/home/user/.local/share/uv/tools/zenzic/bin/zenzic"
-```
-
----
-
-## Commands
-
-Access all commands via `Ctrl+Shift+P` (or `⌘+Shift+P` on macOS):
-
-| Command | ID | Description |
-| :--- | :--- | :--- |
-| **Zenzic: Restart Server** | `zenzic.restartServer` | Terminates and respawns the Language Server process. Useful after updating the Zenzic binary or modifying custom rule configurations. |
-
----
-
-## Status Bar
-
-The Zenzic status indicator appears in the bottom-right corner of the VS Code status bar:
-
-| Indicator | Meaning |
-| :--- | :--- |
-| `⟳ Zenzic: Starting` | The Language Server is initializing. |
-| `✓ Zenzic: Running` | The Language Server is active and ready. |
-| `⚠ Zenzic: Error` | The server failed to start. Check the error notification for details. |
-| `⟳ Zenzic: Restarting` | A restart is in progress. |
-
----
-
-## FAQ & Troubleshooting
-
-### 1. Error: `spawn zenzic ENOENT`
-This means the extension cannot find the `zenzic` binary. Common causes:
-
-- **Zenzic is not installed:** Install it with `uv tool install zenzic==0.23.0`.
-- **VS Code cannot see your `$PATH`:** If you launched VS Code from a GUI/desktop shortcut instead of the terminal, it may not inherit your shell environment.
-- **VS Code installed as a snap or flatpak:** The VS Code process runs in an isolated sandbox whose `$PATH` does not include `~/.local/bin`, so `uv tool install` succeeds but the binary stays invisible to the extension.
-
-**Solution A — Automatic (recommended):** Click **"Install with uv"** in the error popup. Once the terminal finishes, click **"Set Path Automatically"** in the follow-up notification. The extension will run `uv tool dir --bin` to detect the exact binary location and configure `zenzic.executablePath` for you.
-
-**Solution B — Manual:** Find the binary path and set it explicitly:
 ```bash
-uv tool dir --bin   # prints the directory, e.g. /home/user/.local/bin
-```
-Then add to your VS Code settings:
-```jsonc
-"zenzic.executablePath": "/home/user/.local/bin/zenzic"
+uv tool install zenzic
 ```
 
+To upgrade an existing installation:
 
+```bash
+uv tool upgrade zenzic
+```
 
-### 2. Diagnostics are not appearing for my `.md` file
-Check the Language Server logs:
-1. Open the VS Code Output panel (`Ctrl+Shift+U` or `⌘+Shift+U`).
-2. Select **"Zenzic Language Server"** from the dropdown menu in the top right of the panel.
-3. Look for connection or startup errors. Ensure the file is saved as `.md` or `.mdx` or configured as such in the bottom right corner.
+## Extension Settings
 
-### 3. I updated Zenzic but the old version is still running
-The Language Server process runs independently and needs to be restarted to pick up the new binary.
-**Solution:** Run **"Zenzic: Restart Server"** from the Command Palette (`Ctrl+Shift+P` or `⌘+Shift+P`).
+By default, the extension will look for the `zenzic` binary in your system's PATH. 
 
-### 4. How do I disable Zenzic for a specific workspace?
-Since Zenzic activates automatically for Markdown and MDX files, you can disable the extension entirely for a specific workspace:
-1. Go to the Extensions view (`Ctrl+Shift+X`).
-2. Find Zenzic, click the gear icon (⚙️), and select **Disable (Workspace)**.
+If you are using a local virtual environment or a custom installation path, configure the executable path in your workspace or user `settings.json`:
 
----
+```json
+{
+  "zenzic.executablePath": "${workspaceFolder}/.venv/bin/zenzic"
+}
+```
 
-## License
+## Architectural Guarantees
 
-This project is licensed under the [Apache-2.0 License](LICENSE) and is [REUSE 3.3](https://reuse.software/) compliant.
+- **Zero Telemetry:** Zenzic operates entirely locally. No data is sent to the cloud.
+- **Zero LLMs:** All analysis is mathematically deterministic. No probabilistic guessing.
+- **Sub-50ms Latency:** Incremental $O(K)$ graph patching ensures real-time feedback regardless of workspace size.
+
+For the full finding taxonomy and architectural documentation, visit [zenzic.dev](https://zenzic.dev).
