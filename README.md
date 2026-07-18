@@ -12,7 +12,7 @@
 
 Zenzic is a strict, deterministic static analysis engine for Markdown and MDX.
 
-This extension brings the exact same $O(N)$ validation engine used in your CI/CD pipelines directly into your authoring environment, providing real-time feedback as you type.
+This extension brings the exact same $O(N)$ validation engine used in your CI/CD pipelines directly into your authoring environment, providing sub-50ms topological feedback as you type.
 
 ## Thin Client Architecture
 
@@ -21,27 +21,19 @@ This extension is a strictly **Thin Client**. It contains zero parsing logic, ze
 ## Features
 
 ### Real-Time Topological Validation
-
 Modify a heading in one file, and Zenzic instantly invalidates any broken links pointing to that anchor across your entire workspace using $O(K)$ incremental graph patching.
 
-```markdown
-  [Read the setup guide](./setup.md#installation)
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  Z102: Anchor '#installation' not found in 'setup.md'.
-```
+*(Placeholder: Insert `images/demo-topology.gif` here showing a cross-file anchor rename and instant Z102 error)*
+![Topology Demo](images/demo-topology.gif)
 
 ### Instant Credential Scanning
 
 Hardcoded secrets are flagged in milliseconds using strict RE2 validation, preventing leaks before the file is even saved.
 
-```markdown
-  export GITHUB_TOKEN="ghp_************************************"
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  Z201: Critical security violation. GitHub Personal Access Token detected.
-```
+*(Placeholder: Insert `images/demo-security.gif` here showing a GitHub token being pasted and instantly flagged with Z201)*
+![Security Demo](images/demo-security.gif)
 
 ### Deterministic Quality Score (DQS)
-
 Hover over any diagnostic to see the exact Z-Code, the Document Quality Score penalty, and deterministic remediation guidance directly from the Core engine.
 
 ## Requirements
@@ -56,7 +48,7 @@ uv tool install --force zenzic
 
 ## Extension Settings
 
-By default, the extension will look for the `zenzic` binary in your system's PATH.
+By default, the extension will look for the `zenzic` binary in your system's PATH. 
 
 If you are using a local virtual environment or a custom installation path, configure the executable path in your workspace or user `settings.json`:
 
@@ -91,7 +83,7 @@ If you are using a local virtual environment or a custom installation path, conf
 
 - **Zero Telemetry:** Zenzic operates entirely locally. No data is sent to the cloud.
 - **Zero LLMs:** All analysis is mathematically deterministic. No probabilistic guessing.
-- **Sub-50ms Latency:** Incremental graph patching ensures real-time feedback regardless of workspace size.
+- **Sub-50ms Latency:** Incremental $O(K)$ graph patching ensures real-time feedback regardless of workspace size.
 
 ---
 
