@@ -52,8 +52,8 @@ code --install-extension pythonwoods.zenzic-vscode
 
 ```bash
 # Step 1 — Install the Zenzic core engine (prerequisite)
-uv tool install zenzic==0.22.3
-# or: pip install zenzic==0.22.3
+uv tool install zenzic==0.23.0
+# or: pip install zenzic==0.23.0
 
 # Verify the binary is available on your PATH
 zenzic --version
@@ -79,13 +79,13 @@ This extension is a **thin client**: it delegates all analysis to the Zenzic eng
 ### Install Zenzic (recommended — via `uv`)
 
 ```bash
-uv tool install zenzic==0.22.3
+uv tool install zenzic==0.23.0
 ```
 
 ### Install via `pip`
 
 ```bash
-pip install zenzic==0.22.3
+pip install zenzic==0.23.0
 ```
 
 ### Verify the installation
@@ -171,7 +171,7 @@ The Zenzic status indicator appears in the bottom-right corner of the VS Code st
 ### 1. Error: `spawn zenzic ENOENT`
 This means the extension cannot find the `zenzic` binary. Common causes:
 
-- **Zenzic is not installed:** Install it with `uv tool install zenzic==0.22.3`.
+- **Zenzic is not installed:** Install it with `uv tool install zenzic==0.23.0`.
 - **VS Code cannot see your `$PATH`:** If you launched VS Code from a GUI/desktop shortcut instead of the terminal, it may not inherit your shell environment.
 - **VS Code installed as a snap or flatpak:** The VS Code process runs in an isolated sandbox whose `$PATH` does not include `~/.local/bin`, so `uv tool install` succeeds but the binary stays invisible to the extension.
 
