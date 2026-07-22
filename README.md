@@ -46,18 +46,12 @@ Hover over any diagnostic to see the exact Z-Code, the Document Quality Score pe
 
 ## Requirements
 
-Because this is a thin client, **you must install the Zenzic Python Core (v0.23.2 or higher)** on your machine.
+This extension requires **Zenzic Core v0.23.2 or higher**.
 
-We recommend using `uv`:
-
-```bash
-uv tool install zenzic
-```
-
-To upgrade an existing installation:
+We recommend installing or updating via `uv`:
 
 ```bash
-uv tool upgrade zenzic
+uv tool install --force zenzic
 ```
 
 ## Extension Settings
@@ -71,6 +65,27 @@ If you are using a local virtual environment or a custom installation path, conf
   "zenzic.executablePath": "${workspaceFolder}/.venv/bin/zenzic"
 }
 ```
+
+## Troubleshooting
+
+### Zenzic: Outdated Core
+
+- **Cause**: The executable resolved by the extension is older than the minimum required Core version (`v0.23.2`).
+- **Remediation**: Upgrade your global binary:
+  ```bash
+  uv tool install --force zenzic
+  ```
+  Or point `zenzic.executablePath` in `settings.json` to a virtual environment containing Core `v0.23.2` or higher.
+
+### Zenzic: Not Found (ENOENT)
+
+- **Cause**: The `zenzic` executable is not present in the system `$PATH`. This commonly occurs in Flatpak or Snap editor environments where user binary directories (`~/.local/bin`) are isolated from the process environment.
+- **Remediation**: Specify the absolute path to the binary in your workspace or user `settings.json`:
+  ```json
+  {
+    "zenzic.executablePath": "/home/user/.local/bin/zenzic"
+  }
+  ```
 
 ## Architectural Guarantees
 
