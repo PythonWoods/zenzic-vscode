@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.4] - 2026-07-22
+
+### Fixed
+- **Executable Resolution (`VSCODE-CLIENT-002`)**: Formalized `resolveExecutablePath` in `src/extension.ts` with cross-platform fallback logic using `os.homedir()` and `path.join()`. Automatically inspects `~/.local/bin`, `~/.cargo/bin`, and `~/.uv/bin` to ensure binary discovery when VS Code is launched via desktop GUI environment.
+
 ## [0.23.3] - 2026-07-22
 
 ### Changed
