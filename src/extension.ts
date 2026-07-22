@@ -18,6 +18,82 @@ let statusBarItem: vscode.StatusBarItem | undefined;
 // A2 fix: guard flag prevents concurrent restart calls.
 let restarting = false;
 
+const MIN_CORE_VERSION = '0.23.1';
+
+/**
+ * Compare two SemVer strings (MAJOR.MINOR.PATCH).
+ * Returns > 0 if v1 > v2, < 0 if v1 < v2, and 0 if v1 === v2.
+ */
+export function compareSemver(v1: string, v2: string): number {
+    const parse = (v: string) => {
+        const match = v.match(/^(\d+)\.(\d+)\.(\d+)/);
+        if (!match) {
+            throw new Error(`Invalid SemVer format: '${v}'`);
+        }
+        return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+    };
+
+    const [major1, minor1, patch1] = parse(v1);
+    const [major2, minor2, patch2] = parse(v2);
+
+    if (major1 !== major2) { return major1 - major2; }
+    if (minor1 !== minor2) { return minor1 - minor2; }
+    return patch1 - patch2;
+}
+
+export interface CoreVersionCheckResult {
+    status: 'ok' | 'outdated' | 'not_found' | 'error';
+    version?: string;
+    error?: string;
+}
+
+/**
+ * Safely verify the core binary version via execFile (preventing shell injection)
+ * and compare against MIN_CORE_VERSION.
+ */
+export async function checkCoreVersion(executablePath: string): Promise<CoreVersionCheckResult> {
+    const cp = await import('child_process');
+    return new Promise((resolve) => {
+        cp.execFile(executablePath, ['--version'], { encoding: 'utf-8' }, (err, stdout, stderr) => {
+            if (err) {
+                if ((err as { code?: string }).code === 'ENOENT') {
+                    return resolve({ status: 'not_found', error: `Binary not found at '${executablePath}'` });
+                }
+                return resolve({
+                    status: 'error',
+                    error: err.message || stderr || 'Failed to execute zenzic --version'
+                });
+            }
+
+            const output = (stdout || '').trim() || (stderr || '').trim();
+            const match = output.match(/(\d+\.\d+\.\d+)/);
+            if (!match) {
+                return resolve({
+                    status: 'error',
+                    error: `Could not parse version from output: '${output}'`
+                });
+            }
+
+            const foundVersion = match[1];
+            try {
+                if (compareSemver(foundVersion, MIN_CORE_VERSION) < 0) {
+                    return resolve({
+                        status: 'outdated',
+                        version: foundVersion
+                    });
+                }
+                return resolve({
+                    status: 'ok',
+                    version: foundVersion
+                });
+            } catch (cmpErr: unknown) {
+                const msg = cmpErr instanceof Error ? cmpErr.message : String(cmpErr);
+                return resolve({ status: 'error', error: msg });
+            }
+        });
+    });
+}
+
 export async function activate(context: vscode.ExtensionContext) {
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.text = '$(sync~spin) Zenzic: Starting';
@@ -28,8 +104,6 @@ export async function activate(context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration('zenzic');
         const executablePath = config.get<string>('executablePath') || 'zenzic';
 
-        // A6 fix: resolve the executable path (absolute or via PATH) before spawning
-        // to provide a user-friendly error message instead of an opaque LSP crash.
         const resolveExecutable = async (cmd: string): Promise<string | undefined> => {
             const isWindows = process.platform === 'win32';
             const exts = isWindows ? ['.exe', '.cmd', '.bat', ''] : [''];
@@ -65,12 +139,9 @@ export async function activate(context: vscode.ExtensionContext) {
         if (!resolvedPath) {
             statusBarItem!.text = '$(error) Zenzic: Not Found';
             statusBarItem!.tooltip = `Executable not found: '${executablePath}'. Run: uv tool install zenzic`;
-            // Offer actionable shortcuts so the user can resolve the issue without
-            // leaving the editor. "Install with uv" opens the terminal with the
-            // recommended command; "Open Docs" navigates to the README anchor.
             const action = await vscode.window.showErrorMessage(
-                `Zenzic executable not found: '${executablePath}'. ` +
-                `Install the core engine first, then restart VS Code.`,
+                `Zenzic binary not found: '${executablePath}'. ` +
+                `Install the core engine via 'uv tool install zenzic' or configure 'zenzic.executablePath'.`,
                 'Install with uv',
                 'Open Docs'
             );
@@ -78,47 +149,55 @@ export async function activate(context: vscode.ExtensionContext) {
                 const terminal = vscode.window.createTerminal('Zenzic Setup');
                 terminal.show();
                 terminal.sendText('uv tool install zenzic', false);
-
-                // VS Code installed as a snap/flatpak runs in an isolated process
-                // whose PATH does not include the user's ~/.local/bin. After
-                // installing via uv, the binary is reachable but invisible to the
-                // extension. Offer automatic path detection via `uv tool dir --bin`
-                // so the user never has to locate the directory manually.
-                const followUp = await vscode.window.showInformationMessage(
-                    'After the installation completes in the terminal, click ' +
-                    '"Set Path Automatically" so Zenzic can locate the binary ' +
-                    '(required if VS Code is installed as a snap or flatpak).',
-                    'Set Path Automatically',
-                    'Dismiss'
-                );
-                if (followUp === 'Set Path Automatically') {
-                    try {
-                        const cp = await import('child_process');
-                        const binDir: string = await new Promise((resolve, reject) => {
-                            cp.exec('uv tool dir --bin', (err, stdout) => {
-                                if (err) { reject(err); } else { resolve(stdout.trim()); }
-                            });
-                        });
-                        const zenzicBin = path.join(binDir, 'zenzic');
-                        const cfg = vscode.workspace.getConfiguration('zenzic');
-                        await cfg.update('executablePath', zenzicBin, vscode.ConfigurationTarget.Global);
-                        vscode.window.showInformationMessage(
-                            `Zenzic path set to: ${zenzicBin}. Starting server…`
-                        );
-                        // Restart so the updated executablePath is picked up immediately.
-                        await restartServer();
-                    } catch {
-                        vscode.window.showErrorMessage(
-                            'Could not auto-detect the uv tools directory. ' +
-                            'Set "zenzic.executablePath" manually in your VS Code settings.'
-                        );
-                    }
-                }
             } else if (action === 'Open Docs') {
                 vscode.env.openExternal(vscode.Uri.parse(
                     'https://github.com/PythonWoods/zenzic-vscode#requirements'
                 ));
             }
+            return;
+        }
+
+        // Enforce Core Version Handshake (>= MIN_CORE_VERSION) before starting LSP client
+        const versionResult = await checkCoreVersion(resolvedPath);
+        if (versionResult.status === 'not_found') {
+            statusBarItem!.text = '$(error) Zenzic: Not Found';
+            statusBarItem!.tooltip = `Zenzic binary not found at '${resolvedPath}'`;
+            vscode.window.showErrorMessage(
+                `Zenzic binary not found at '${resolvedPath}'. Please install it via 'uv tool install zenzic' or configure 'zenzic.executablePath'.`
+            );
+            return;
+        }
+
+        if (versionResult.status === 'outdated') {
+            statusBarItem!.text = '$(error) Zenzic: Outdated Core';
+            statusBarItem!.tooltip = `Zenzic Core v${MIN_CORE_VERSION} or higher required (found v${versionResult.version})`;
+            const action = await vscode.window.showErrorMessage(
+                `Zenzic extension requires Zenzic Core v${MIN_CORE_VERSION} or higher. ` +
+                `Found v${versionResult.version}. Please update the global binary or configure 'zenzic.executablePath'.`,
+                'Update with uv',
+                'Configure Path',
+                'Open Docs'
+            );
+            if (action === 'Update with uv') {
+                const terminal = vscode.window.createTerminal('Zenzic Update');
+                terminal.show();
+                terminal.sendText('uv tool install --force zenzic', false);
+            } else if (action === 'Configure Path') {
+                vscode.commands.executeCommand('workbench.action.openSettings', 'zenzic.executablePath');
+            } else if (action === 'Open Docs') {
+                vscode.env.openExternal(vscode.Uri.parse(
+                    'https://github.com/PythonWoods/zenzic-vscode#requirements'
+                ));
+            }
+            return;
+        }
+
+        if (versionResult.status === 'error') {
+            statusBarItem!.text = '$(error) Zenzic: Version Error';
+            statusBarItem!.tooltip = `Failed to verify Zenzic Core version: ${versionResult.error}`;
+            vscode.window.showErrorMessage(
+                `Could not verify Zenzic Core version: ${versionResult.error}`
+            );
             return;
         }
 

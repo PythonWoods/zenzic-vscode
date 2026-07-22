@@ -18,5 +18,7 @@ esbuild.js
 eslint.config.mjs
 package-lock.json
 node_modules/**
+.pytest_cache/**
+*.vsix
 **/*.ts
 **/*.map
