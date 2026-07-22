@@ -22,3 +22,8 @@ node_modules/**
 *.vsix
 **/*.ts
 **/*.map
+.architect/**
+.zenzic_cache/**
+example/**
+ROADMAP.md
+images/demo*.gif

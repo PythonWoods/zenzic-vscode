@@ -5,40 +5,33 @@
 <h1 align="center">Zenzic: Deterministic Document Integrity</h1>
 
 <p align="center">
-  <strong>Sub-50ms topological validation and credential scanning for documentation graphs.</strong>
+  <strong>Deterministic Document Integrity Engine and SAST for Markdown/MDX graphs.</strong>
 </p>
 
 ---
 
-Zenzic is a strict, deterministic static analysis engine for Markdown and MDX.
+Zenzic is a Deterministic Document Integrity Engine and SAST for Markdown/MDX graphs.
 
-This extension brings the exact same $O(N)$ validation engine used in your CI/CD pipelines directly into your authoring environment, providing sub-50ms topological feedback as you type.
+This extension brings the exact same $O(N)$ SAST engine used in your CI/CD pipelines directly into your authoring environment, providing sub-50ms topological feedback as you type.
 
 ## Thin Client Architecture
 
 This extension is a strictly **Thin Client**. It contains zero parsing logic, zero regex engines, and zero validation rules. It communicates via the Language Server Protocol (LSP) over standard I/O directly with the Zenzic Python binary installed on your system.
 
-## Features
+## Key Features
 
-### Real-Time Topological Validation
-Modify a heading in one file, and Zenzic instantly invalidates any broken links pointing to that anchor across your entire workspace using $O(K)$ incremental graph patching.
+### 1. Security Scanning (SAST)
+Hardcoded credentials (Z201) and path traversal sequences (Z202/Z203) are flagged in milliseconds using RE2 validation engine rules, preventing leaks before the file is even saved.
 
-*(Placeholder: Insert `images/demo-topology.gif` here showing a cross-file anchor rename and instant Z102 error)*
-![Topology Demo](images/demo-topology.gif)
+### 2. Graph Topology Analysis (VSM)
+Modify a heading in one file, and Zenzic's Virtual Site Map (VSM) instantly invalidates any broken links, orphan pages, or dead navigation nodes across your entire workspace using $O(K)$ incremental graph patching.
 
-### Instant Credential Scanning
-
-Hardcoded secrets are flagged in milliseconds using strict RE2 validation, preventing leaks before the file is even saved.
-
-*(Placeholder: Insert `images/demo-security.gif` here showing a GitHub token being pasted and instantly flagged with Z201)*
-![Security Demo](images/demo-security.gif)
-
-### Deterministic Quality Score (DQS)
-Hover over any diagnostic to see the exact Z-Code, the Document Quality Score penalty, and deterministic remediation guidance directly from the Core engine.
+### 3. Deterministic CI/CD Enforcement & Quality Scoring
+Hover over any diagnostic to see the exact Z-Code, the Zero-DBT Quality Score penalty, and deterministic remediation guidance directly from the Core engine, ensuring 1:1 alignment with your CI/CD quality gate.
 
 ## Requirements
 
-This extension requires **Zenzic Core v0.23.2 or higher**.
+This extension requires **Zenzic Core v0.23.3 or higher**.
 
 We recommend installing or updating via `uv`:
 
@@ -62,12 +55,12 @@ If you are using a local virtual environment or a custom installation path, conf
 
 ### Zenzic: Outdated Core
 
-- **Cause**: The executable resolved by the extension is older than the minimum required Core version (`v0.23.2`).
+- **Cause**: The executable resolved by the extension is older than the minimum required Core version (`v0.23.3`).
 - **Remediation**: Upgrade your global binary:
   ```bash
   uv tool install --force zenzic
   ```
-  Or point `zenzic.executablePath` in `settings.json` to a virtual environment containing Core `v0.23.2` or higher.
+  Or point `zenzic.executablePath` in `settings.json` to a virtual environment containing Core `v0.23.3` or higher.
 
 ### Zenzic: Not Found (ENOENT)
 

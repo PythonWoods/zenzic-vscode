@@ -1,14 +1,13 @@
 {
   "name": "zenzic-vscode",
   "displayName": "Zenzic",
-  "description": "Visual Studio Code extension for Zenzic LSP",
-  "version": "0.23.2",
+  "description": "Deterministic Document Integrity Engine and SAST for Markdown/MDX graphs.",
+  "version": "0.23.3",
   "publisher": "pythonwoods",
   "engines": {
     "vscode": "^1.125.0"
   },
   "categories": [
-    "Linters",
     "Programming Languages"
   ],
   "keywords": [
@@ -60,7 +59,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run build -- --production",
+    "vscode:prepublish": "node esbuild.js --production",
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
     "lint": "eslint src"

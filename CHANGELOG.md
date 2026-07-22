@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.3] - 2026-07-22
+
+### Changed
+- **Toolchain Modernization**: Migrated to official `@vscode/vsce` package and modernized prepublish scripts (`node esbuild.js --production`), eliminating `DEP0190` shell injection deprecation warnings (`VSCODE-PR-023-3-OPTIMIZATION`).
+
+### Fixed
+- **Package Sanitization**: Configured `.vscodeignore` to exclude development artifacts (`.architect/`, `.zenzic_cache/`, `example/`), pointer governance files (`ROADMAP.md`), and placeholder images (`images/demo*.gif`), producing an ultra-lean VSIX payload of 8 required files (`VSCODE-PKG-002`, `VSCODE-PKG-003`).
+
 ## [0.23.2] - 2026-07-22
 
 ### Added
