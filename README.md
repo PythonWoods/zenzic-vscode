@@ -46,7 +46,7 @@ Hover over any diagnostic to see the exact Z-Code, the Document Quality Score pe
 
 ## Requirements
 
-Because this is a thin client, **you must install the Zenzic Python Core (v0.23.1 or higher)** on your machine.
+Because this is a thin client, **you must install the Zenzic Python Core (v0.23.2 or higher)** on your machine.
 
 We recommend using `uv`:
 

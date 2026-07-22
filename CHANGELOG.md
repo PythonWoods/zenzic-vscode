@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.2] - 2026-07-22
+
+### Added
+- **Strict Core Version Handshake**: Added pre-initialization version check (`checkCoreVersion`) using `child_process.execFile` to verify Zenzic Core version `>= 0.23.1` before launching the LSP client, preventing silent failures with stale binaries (`VSCODE-CLIENT-001-VERSION-HANDSHAKE`).
+
+### Fixed
+- **Marketplace Asset Integrity**: Updated `.vscodeignore` to exclude `.pytest_cache` and build artifacts while ensuring `images/logo.png` is correctly bundled in extension packages (`VSCODE-PKG-001-ASSET-INTEGRITY`).
+
 ## [0.23.1] - 2026-07-22
 
 ### Added
