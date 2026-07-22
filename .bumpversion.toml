@@ -48,8 +48,17 @@ replace = "git push origin v{new_version}"
 
 # ── README.md ─────────────────────────────────────────────────────────────────
 
-# Update the required Zenzic Python Core version in the requirements section
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = "(v{current_version} or higher)"
-replace = "(v{new_version} or higher)"
+search = "Zenzic Core v{current_version} or higher"
+replace = "Zenzic Core v{new_version} or higher"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "minimum required Core version (`v{current_version}`)"
+replace = "minimum required Core version (`v{new_version}`)"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "virtual environment containing Core `v{current_version}` or higher"
+replace = "virtual environment containing Core `v{new_version}` or higher"
