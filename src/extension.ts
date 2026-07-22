@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import {
@@ -19,6 +20,55 @@ let statusBarItem: vscode.StatusBarItem | undefined;
 let restarting = false;
 
 const MIN_CORE_VERSION = '0.23.1';
+
+/**
+ * Safely resolve the Zenzic executable path with cross-platform fallback logic.
+ * Order of precedence:
+ * 1. Explicit user/workspace setting (zenzic.executablePath containing path separator or absolute)
+ * 2. System $PATH
+ * 3. Standard user binary fallback directories (~/.local/bin, ~/.cargo/bin, ~/.uv/bin) via os.homedir()
+ */
+export async function resolveExecutablePath(cmd: string): Promise<string | undefined> {
+    const isWindows = process.platform === 'win32';
+    const exts = isWindows ? ['.exe', '.cmd', '.bat', ''] : [''];
+
+    const checkPath = async (p: string): Promise<string | undefined> => {
+        for (const ext of exts) {
+            try {
+                await fs.promises.access(p + ext, fs.constants.X_OK);
+                return p + ext;
+            } catch {
+                // Ignore and try next extension or path
+            }
+        }
+        return undefined;
+    };
+
+    if (path.isAbsolute(cmd) || cmd.includes(path.sep) || (isWindows && cmd.includes('/'))) {
+        return await checkPath(cmd);
+    }
+
+    const home = os.homedir();
+    const systemPaths = (process.env.PATH || '').split(path.delimiter);
+    const fallbackPaths = home
+        ? [
+            path.join(home, '.local', 'bin'),
+            path.join(home, '.cargo', 'bin'),
+            path.join(home, '.uv', 'bin')
+        ]
+        : [];
+
+    const searchDirs = [...systemPaths, ...fallbackPaths];
+    for (const dir of searchDirs) {
+        if (!dir) continue;
+        const fullPath = path.join(dir, cmd);
+        const resolved = await checkPath(fullPath);
+        if (resolved) {
+            return resolved;
+        }
+    }
+    return undefined;
+}
 
 /**
  * Compare two SemVer strings (MAJOR.MINOR.PATCH).
@@ -104,37 +154,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration('zenzic');
         const executablePath = config.get<string>('executablePath') || 'zenzic';
 
-        const resolveExecutable = async (cmd: string): Promise<string | undefined> => {
-            const isWindows = process.platform === 'win32';
-            const exts = isWindows ? ['.exe', '.cmd', '.bat', ''] : [''];
-            
-            const checkPath = async (p: string): Promise<string | undefined> => {
-                for (const ext of exts) {
-                    try {
-                        await fs.promises.access(p + ext, fs.constants.X_OK);
-                        return p + ext;
-                    } catch {
-                        // ignore and try next extension or path
-                    }
-                }
-                return undefined;
-            };
-
-            if (path.isAbsolute(cmd) || cmd.includes(path.sep) || (isWindows && cmd.includes('/'))) {
-                return await checkPath(cmd);
-            }
-
-            const paths = (process.env.PATH || '').split(path.delimiter);
-            for (const dir of paths) {
-                if (!dir) continue;
-                const fullPath = path.join(dir, cmd);
-                const resolved = await checkPath(fullPath);
-                if (resolved) return resolved;
-            }
-            return undefined;
-        };
-
-        const resolvedPath = await resolveExecutable(executablePath);
+        const resolvedPath = await resolveExecutablePath(executablePath);
 
         if (!resolvedPath) {
             statusBarItem!.text = '$(error) Zenzic: Not Found';
