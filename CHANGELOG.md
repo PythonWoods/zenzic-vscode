@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.1] - 2026-07-22
+
+### Added
+- **LSP Diagnostic Formatting Support**: Surfaced Z-Code diagnostic message prefixes (`[{code}]`) and LSP 3.16/3.17 `codeDescription` documentation links emitted by Zenzic Core 0.23.1.
+
 ## [0.23.0] - 2026-07-18
 
 ### Changed
