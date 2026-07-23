@@ -31,7 +31,7 @@ Hover over any diagnostic to see the exact Z-Code, the Zero-DBT Quality Score pe
 
 ## Requirements
 
-This extension requires **Zenzic Core v0.23.4 or higher**.
+This extension requires **Zenzic Core v0.23.5 or higher**.
 
 We recommend installing or updating via `uv`:
 
@@ -55,12 +55,12 @@ If you are using a local virtual environment or a custom installation path, conf
 
 ### Zenzic: Outdated Core
 
-- **Cause**: The executable resolved by the extension is older than the minimum required Core version (`v0.23.4`).
+- **Cause**: The executable resolved by the extension is older than the minimum required Core version (`v0.23.5`).
 - **Remediation**: Upgrade your global binary:
   ```bash
   uv tool install --force zenzic
   ```
-  Or point `zenzic.executablePath` in `settings.json` to a virtual environment containing Core `v0.23.4` or higher.
+  Or point `zenzic.executablePath` in `settings.json` to a virtual environment containing Core `v0.23.5` or higher.
 
 ### Zenzic: Not Found (ENOENT)
 

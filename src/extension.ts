@@ -236,8 +236,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const clientOptions: LanguageClientOptions = {
             documentSelector: [
-                { scheme: 'file', language: 'markdown' },
-                { scheme: 'file', language: 'mdx' },
+                { scheme: 'file', language: 'markdown', pattern: '**/*.{md,mdx,markdown}' },
+                { scheme: 'file', language: 'mdx', pattern: '**/*.{md,mdx,markdown}' },
                 { scheme: 'untitled', language: 'markdown' },
                 { scheme: 'untitled', language: 'mdx' }
             ],
