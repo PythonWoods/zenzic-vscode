@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.7] - 2026-07-23
+
+### Fixed
+
+- **Core Version Handshake Pinning (`VSCODE-CLIENT-004`)**: Updated `just pin-core` and `just versions` commands to manage `MIN_CORE_VERSION` in `src/extension.ts`, ensuring version handshake parity with Zenzic Core 0.23.3.
+
 ## [0.23.6] - 2026-07-23
 
 ## [0.23.5] - 2026-07-23
