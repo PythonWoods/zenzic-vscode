@@ -8,7 +8,7 @@
 
 | Field | Value |
 | :--- | :--- |
-| **Extension Version** | 0.23.6 |
+| **Extension Version** | 0.23.7 |
 | **Pinned Core** | `zenzic>=0.23.2` |
 | **Date** | 2026-07-11 |
 
@@ -44,8 +44,8 @@ git push origin main
 git pull origin main
 
 # 3. Create the immutable signed tag pointing to the HEAD of origin/main
-git tag -s v0.23.6 -m "Release v0.23.6"
-git push origin v0.23.6
+git tag -s v0.23.7 -m "Release v0.23.7"
+git push origin v0.23.7
 ```
 
 ## 4. Distribute (Automated)
