@@ -21,6 +21,12 @@ let restarting = false;
 
 const MIN_CORE_VERSION = '0.23.3';
 
+interface DqsUpdateParams {
+    score: number;
+    base_score: number;
+    penalties: number;
+}
+
 /**
  * Safely resolve the Zenzic executable path with cross-platform fallback logic.
  * Order of precedence:
@@ -255,6 +261,13 @@ export async function activate(context: vscode.ExtensionContext) {
             await client.start();
             statusBarItem!.text = '$(check) Zenzic: Running';
             statusBarItem!.tooltip = 'Zenzic Language Server is running';
+
+            client.onNotification('zenzic/dqsUpdate', (params: DqsUpdateParams) => {
+                if (statusBarItem && params && typeof params.score === 'number') {
+                    statusBarItem.text = `$(dashboard) Zenzic DQS: ${params.score}/100`;
+                    statusBarItem.tooltip = `Documentation Quality Score: ${params.score}/100 (Penalties: ${params.penalties} pts)`;
+                }
+            });
         } catch (err: unknown) {
             // A1 fix: err is unknown; narrow to Error before accessing .message to
             // avoid producing "Error: undefined" when a non-Error value is thrown.
