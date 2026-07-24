@@ -14,7 +14,11 @@ set shell := ["bash", "-c"]
 verify:
 	npm run lint
 	npx tsc --noEmit
-	command -v reuse > /dev/null 2>&1 && reuse lint || echo "reuse not installed — skipping REUSE lint"
+	@if ! command -v reuse > /dev/null 2>&1; then \
+		echo "ERROR: 'reuse' is not installed. Please install it via 'uv tool install reuse' or 'pipx install reuse'."; \
+		exit 1; \
+	fi
+	reuse lint
 
 release part:
 	#!/usr/bin/env bash

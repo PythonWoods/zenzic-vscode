@@ -12,6 +12,9 @@ path = [
   "REUSE.toml",
   "CHANGELOG.md",
   "RELEASE.md",
+  "README.md",
+  "ROADMAP.md",
+  "images/**",
   "assets/**"
 ]
 SPDX-FileCopyrightText = "2026 PythonWoods <dev@pythonwoods.dev>"
