@@ -174,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
             if (action === 'Install with uv') {
                 const terminal = vscode.window.createTerminal('Zenzic Setup');
                 terminal.show();
-                terminal.sendText('uv tool install zenzic', false);
+                terminal.sendText('uv tool install zenzic', true);
             } else if (action === 'Open Docs') {
                 vscode.env.openExternal(vscode.Uri.parse(
                     'https://github.com/PythonWoods/zenzic-vscode#requirements'
@@ -207,7 +207,7 @@ export async function activate(context: vscode.ExtensionContext) {
             if (action === 'Update with uv') {
                 const terminal = vscode.window.createTerminal('Zenzic Update');
                 terminal.show();
-                terminal.sendText('uv tool install --force zenzic', false);
+                terminal.sendText('uv tool install --force zenzic', true);
             } else if (action === 'Configure Path') {
                 vscode.commands.executeCommand('workbench.action.openSettings', 'zenzic.executablePath');
             } else if (action === 'Open Docs') {
