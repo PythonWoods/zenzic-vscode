@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-07-24
+
 ### Fixed
 
 - **Remediation Command Auto-Execution (`VSCODE-FIX-004`)**: Fixed terminal execution parameter (`addNewLine = true`) in `terminal.sendText('uv tool install --force zenzic', true)`, ensuring remediation actions execute automatically without unsubmitted command prompts.
