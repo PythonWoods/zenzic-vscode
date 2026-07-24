@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Core Parity Alignment**: Realigned pinned Zenzic Core baseline to `0.24.3`, delivering LSP fixes for `docs_root` fallback and VS Code-specific build directory exclusions (`out`, `.vscode-test`).
+
 ## [0.24.2] - 2026-07-24
 
 ### Changed
