@@ -38,7 +38,7 @@ jobs:
           enable-cache: true
 
       - name: Install REUSE
-        run: uv tool install reuse
+        run: uv tool install "reuse[charset-normalizer]"
 
       - name: Install NPM Dependencies
         run: npm ci
