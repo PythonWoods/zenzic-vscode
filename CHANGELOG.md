@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.4] - 2026-07-24
+
+### Changed
+
+- **Core Parity Alignment**: Realigned pinned Zenzic Core baseline to `0.24.4`, ensuring editor LSP client compatibility with Core user exclusion enforcement (`LSP-FIX-007`).
+
 ## [0.24.3] - 2026-07-24
 
 ### Changed
