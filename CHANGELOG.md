@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Remediation Command Auto-Execution (`VSCODE-FIX-004`)**: Fixed terminal execution parameter (`addNewLine = true`) in `terminal.sendText('uv tool install --force zenzic', true)`, ensuring remediation actions execute automatically without unsubmitted command prompts.
+
+### Changed
+
+- **Strict Quality Gate Verification (`VSCODE-CI-002`)**: Enforced strict REUSE check in `justfile` `verify` recipe, failing deterministically with exit code 1 if `reuse` is not installed.
+
 ## [0.24.0] - 2026-07-24
 
 ### Added
