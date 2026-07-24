@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-07-24
+
 ### Added
 
 - **Real-Time DQS Status Bar Integration (`VSCODE-CLIENT-005`)**: Registered `zenzic/dqsUpdate` notification handler on Language Client to display live DQS score and penalty metrics in the VS Code Status Bar.
